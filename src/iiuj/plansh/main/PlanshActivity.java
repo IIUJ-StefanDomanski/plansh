@@ -9,13 +9,14 @@ import org.cocos2d.opengl.CCGLSurfaceView;
 import org.cocos2d.types.CGPoint;
 
 import android.app.Activity;
+import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.Window;
 import android.view.WindowManager;
 
 public class PlanshActivity extends Activity {
-	private CCGLSurfaceView mGLSurfaceView;
+    private PlanshView mGLSurfaceView;
 	
     /** Called when the activity is first created. */
     @Override
@@ -29,12 +30,16 @@ public class PlanshActivity extends Activity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-        mGLSurfaceView = new CCGLSurfaceView(this);
-        
+
+        //, (GameViewLayer) scene.getChildren().get(0)
+        //mGLSurfaceView = new PlanshView(this);
+        mGLSurfaceView = new PlanshView(this);
+
         setContentView(mGLSurfaceView);
-        
+
         // attach the OpenGL view to a window
         CCDirector.sharedDirector().attachInView(mGLSurfaceView);
+        //CCDirector.sharedDirector().set
 
         // no effect here because device orientation is controlled by manifest
         CCDirector.sharedDirector().setDeviceOrientation(CCDirector.kCCDeviceOrientationPortrait);
@@ -45,8 +50,9 @@ public class PlanshActivity extends Activity {
 
         // frames per second
         CCDirector.sharedDirector().setAnimationInterval(1.0f / 60);
+        CCScene scene = GameViewLayer.scene();
 
-        CCScene scene = MainLayer.scene();
+        mGLSurfaceView.setGameViewLayer((GameViewLayer) scene.getChildren().get(0));
 
         // Make the Scene active
         CCDirector.sharedDirector().runWithScene(scene);

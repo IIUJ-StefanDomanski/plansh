@@ -1,9 +1,12 @@
 C:\Users\Stefan\Desktop\git\plansh\bin\classes.dex : \
 C:\Users\Stefan\Desktop\git\plansh\bin\classes\iiuj\plansh\main\BuildConfig.class \
+C:\Users\Stefan\Desktop\git\plansh\bin\classes\iiuj\plansh\main\GameActivity$SecondLayer.class \
 C:\Users\Stefan\Desktop\git\plansh\bin\classes\iiuj\plansh\main\GameActivity$TemplateLayer.class \
 C:\Users\Stefan\Desktop\git\plansh\bin\classes\iiuj\plansh\main\GameActivity.class \
+C:\Users\Stefan\Desktop\git\plansh\bin\classes\iiuj\plansh\main\GameViewLayer.class \
 C:\Users\Stefan\Desktop\git\plansh\bin\classes\iiuj\plansh\main\MainLayer.class \
 C:\Users\Stefan\Desktop\git\plansh\bin\classes\iiuj\plansh\main\PlanshActivity.class \
+C:\Users\Stefan\Desktop\git\plansh\bin\classes\iiuj\plansh\main\PlanshView.class \
 C:\Users\Stefan\Desktop\git\plansh\bin\classes\iiuj\plansh\main\R$attr.class \
 C:\Users\Stefan\Desktop\git\plansh\bin\classes\iiuj\plansh\main\R$drawable.class \
 C:\Users\Stefan\Desktop\git\plansh\bin\classes\iiuj\plansh\main\R$string.class \
