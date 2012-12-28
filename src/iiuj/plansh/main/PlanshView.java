@@ -62,6 +62,7 @@ public class PlanshView extends CCGLSurfaceView {
         }
         switch (event.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN:
+                gml.touchBegin(event.getX(), event.getY());
                 start.set(event.getX(), event.getY());
                 mode = DRAG;
                 break;
@@ -73,6 +74,7 @@ public class PlanshView extends CCGLSurfaceView {
                 }
                 break;
             case MotionEvent.ACTION_UP:
+                gml.touchEnd(event.getX(), event.getY());
             case MotionEvent.ACTION_POINTER_UP:
                 mode = NONE;
                 break;
