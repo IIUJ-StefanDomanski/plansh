@@ -19,7 +19,6 @@ import org.cocos2d.types.*;
  * @author Stefan
  */
 public class GameViewLayer extends CCLayer {
-        CCSprite sprite;
         HudNode hud;
 
         class HudNode extends CCNode {
@@ -90,6 +89,10 @@ public class GameViewLayer extends CCLayer {
     		scene.addChild(layer);
     		scene.addChild(layer.hud);
 
+                layer.addImage("icons/rzut_koscia.png", 320, 160);
+                layer.addImage("icons/nastepny_gracz.png", 100, 50);
+                layer.addImage("icons/odtworz_dzwiek.png", 450, 150);
+
     		return scene;
     	}
 
@@ -97,13 +100,19 @@ public class GameViewLayer extends CCLayer {
                 hud = new HudNode();
                 hud.init(4, 8);
                 hud.hide();
-                sprite = CCSprite.sprite("back.png");
-
-                addChild(sprite, 1);
-
-                getChild(0).setPosition(320, 160);
 
                 //timer  = new CCTimer(this, "startup", 5);
+        }
+
+        public void addImage(String image, int x, int y){
+            int i;
+            if(this.getChildren() == null)
+                i = 0;
+            else
+                i = this.getChildren().size();
+            CCSprite sprite = CCSprite.sprite(image);
+            addChild(sprite, i+1);
+            getChild(i).setPosition(x, y);
         }
 
         public void startup(float n){
@@ -127,6 +136,7 @@ public class GameViewLayer extends CCLayer {
             setPosition(CGPoint.ccpAdd(getPosition(), cgp));
         }
 
+
         private float spacing(CGPoint cp1, CGPoint cp2) {
           // ...
           float x = cp1.x - cp2.x;
@@ -140,30 +150,44 @@ public class GameViewLayer extends CCLayer {
 
         private int touchState = 0;
         private CGPoint startT;
+        private CCNode modNode;
         private boolean tap = false;
 
         public void touchBegin(float x, float y){
             tap = true;
             startT = CGPoint.ccp(x, y);
+            CCScheduler.sharedScheduler().schedule("startup", this, 0.1f, false);
             if(!hud.isHidden()&&CCDirector.sharedDirector().winSize().height-y<80)
                 touchState = SLIDE;
-            else touchState = 0;
-            CCScheduler.sharedScheduler().schedule("startup", this, 0.1f, false);
-            CGPoint location = CCDirector.sharedDirector().convertToGL(CGPoint.ccp(x,y));
-            CGPoint translate = CGPoint.ccpSub(location, getPosition());
-            for(CCNode child : getChildren()){
-                CGPoint cp = convertToWorldSpace(child.convertToWorldSpace(child.getBoundingBox().size.width, 0).x,
-                        child.convertToWorldSpace(child.getBoundingBox().size.width, 0).y);
-                //Log.v("Space lower-right: ", ""+spacing(cp, CGPoint.ccp(x, y)));
-                cp = child.convertToWorldSpace(child.getBoundingBox().size.width/2,
-                            -child.getBoundingBox().size.height/2);
+            else{
+                touchState = 0;
+                CGPoint location = CCDirector.sharedDirector().convertToGL(CGPoint.ccp(x,y));
 
-                //Log.v("Space upper-left: ", ""+spacing(cp, CGPoint.ccp(x, y)));
-                //Log.v("Child: ", "X: "+cp.x+" Y: "+cp.y);
-                //Log.v("Child: ", "X: "+cp.x+" Y: "+cp.y);
-                //Log.v("Child dim: ", "X: "+child.getBoundingBox().size.width+" Y: "+child.getBoundingBox().size.height);
+                for(CCNode child : getChildren()){
+                    CGPoint ul = this.convertToWorldSpace(child.getPosition().x - child.getBoundingBox().size.width/2*child.getScale(),
+                            child.getPosition().y + child.getBoundingBox().size.height/2*child.getScale());
+                    CGPoint lr = this.convertToWorldSpace(child.getPosition().x + child.getBoundingBox().size.width/2*child.getScale(),
+                            child.getPosition().y - child.getBoundingBox().size.height/2*child.getScale());
+                    if(spacing(ul, location)<30 || spacing(lr, location)<30){
+                        touchState = READY;
+                        modNode = child;
+                    }
+                }
             }
-            //Log.v("Touch: ", "X: "+translate.x+" Y: "+translate.y);
+        }
+
+        public void touchDown(float x, float y){
+            if(touchState == READY){
+                CGPoint location = CCDirector.sharedDirector().convertToGL(CGPoint.ccp(x,y));
+
+                CGPoint ul = this.convertToWorldSpace(modNode.getPosition().x - modNode.getBoundingBox().size.width/2*modNode.getScale(),
+                        modNode.getPosition().y + modNode.getBoundingBox().size.height/2*modNode.getScale());
+                CGPoint lr = this.convertToWorldSpace(modNode.getPosition().x + modNode.getBoundingBox().size.width/2*modNode.getScale(),
+                        modNode.getPosition().y - modNode.getBoundingBox().size.height/2*modNode.getScale());
+                if(spacing(ul, location)<30 || spacing(lr, location)<30){
+                    touchState = SET;
+                }
+            }
         }
 
         public void touchEnd(float x, float y){
@@ -178,11 +202,16 @@ public class GameViewLayer extends CCLayer {
 
         public void scaleCamera(float scale, float nx, float ny){
             CGPoint location = CCDirector.sharedDirector().convertToGL(CGPoint.ccp(nx,ny));
-            CGPoint translate = CGPoint.ccpSub(location, getPosition());
-            move(translate);
+            if(touchState != SET){
+                CGPoint translate = CGPoint.ccpSub(location, getPosition());
+                move(translate);
 
-            setScale(getScale()*scale);
-            move(CGPoint.ccpMult(translate, -1*scale));
+                setScale(getScale()*scale);
+                move(CGPoint.ccpMult(translate, -1*scale));
+            }else{
+                modNode.setPosition(this.convertToNodeSpace(location.x, location.y));
+                modNode.setScale(scale);
+            }
         }
 
     @Override

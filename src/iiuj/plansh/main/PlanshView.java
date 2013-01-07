@@ -71,6 +71,7 @@ public class PlanshView extends CCGLSurfaceView {
                 if (oldDist > 10f) {
                     midPoint(mid, event);
                     mode = ZOOM;
+                    gml.touchDown(event.getX(1), event.getY(1));
                 }
                 break;
             case MotionEvent.ACTION_UP:
