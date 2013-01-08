@@ -20,6 +20,7 @@ import org.cocos2d.types.*;
  */
 public class GameViewLayer extends CCLayer {
         HudNode hud;
+        WindowsLayer windows;
 
         class HudNode extends CCNode {
             CCNode leftBar;
@@ -88,10 +89,15 @@ public class GameViewLayer extends CCLayer {
 
     		scene.addChild(layer);
     		scene.addChild(layer.hud);
+    		scene.addChild(layer.windows);
 
                 layer.addImage("icons/rzut_koscia.png", 320, 160);
                 layer.addImage("icons/nastepny_gracz.png", 100, 50);
                 layer.addImage("icons/odtworz_dzwiek.png", 450, 150);
+
+                layer.windows.openWindow(250, 150, "Hello world!");
+                layer.windows.openWindow(50, 50, "Male");
+                layer.windows.openWindow(600, 300, "Duze");
 
     		return scene;
     	}
@@ -100,6 +106,8 @@ public class GameViewLayer extends CCLayer {
                 hud = new HudNode();
                 hud.init(4, 8);
                 hud.hide();
+
+                windows = new WindowsLayer();
 
                 //timer  = new CCTimer(this, "startup", 5);
         }
@@ -121,7 +129,9 @@ public class GameViewLayer extends CCLayer {
         }
 
         public void moveCamera(float nx, float ny){
-            if(touchState == SLIDE){
+            if(touchState == WIN)
+                windows.touchMove(nx, ny);
+            else if(touchState == SLIDE) {
                 hud.downBar.setPosition(hud.downBar.getPosition().x+nx, 0);
                 if(hud.downBar.getPosition().x > hud.downPos.x)
                     hud.downBar.runAction(CCMoveTo.action(0.3f, hud.downPos));
@@ -147,6 +157,7 @@ public class GameViewLayer extends CCLayer {
         static final int READY = 1;
         static final int SET = 2;
         static final int SLIDE = 3;
+        static final int WIN = 4;
 
         private int touchState = 0;
         private CGPoint startT;
@@ -157,7 +168,10 @@ public class GameViewLayer extends CCLayer {
             tap = true;
             startT = CGPoint.ccp(x, y);
             CCScheduler.sharedScheduler().schedule("startup", this, 0.1f, false);
-            if(!hud.isHidden()&&CCDirector.sharedDirector().winSize().height-y<80)
+
+            if(windows.touchBegin(x, y))
+                touchState = WIN;
+            else if(!hud.isHidden() && CCDirector.sharedDirector().winSize().height - y < 80)
                 touchState = SLIDE;
             else{
                 touchState = 0;
@@ -191,7 +205,10 @@ public class GameViewLayer extends CCLayer {
         }
 
         public void touchEnd(float x, float y){
-            if(tap&&spacing(startT, CGPoint.ccp(x, y))<30){
+            if(touchState == WIN)
+                windows.touchEnd(x, y);
+            else if(tap && spacing(startT, CGPoint.ccp(x, y)) < 30)
+            {
                 if(hud.isHidden())
                     hud.show();
                 else
@@ -201,6 +218,7 @@ public class GameViewLayer extends CCLayer {
         }
 
         public void scaleCamera(float scale, float nx, float ny){
+            if(touchState == WIN)return;
             CGPoint location = CCDirector.sharedDirector().convertToGL(CGPoint.ccp(nx,ny));
             if(touchState != SET){
                 CGPoint translate = CGPoint.ccpSub(location, getPosition());

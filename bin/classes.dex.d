@@ -15,6 +15,10 @@ C:\Users\Stefan\Desktop\git\i002\i002_z005\plansh\bin\classes\iiuj\plansh\main\R
 C:\Users\Stefan\Desktop\git\i002\i002_z005\plansh\bin\classes\iiuj\plansh\main\R$drawable.class \
 C:\Users\Stefan\Desktop\git\i002\i002_z005\plansh\bin\classes\iiuj\plansh\main\R$string.class \
 C:\Users\Stefan\Desktop\git\i002\i002_z005\plansh\bin\classes\iiuj\plansh\main\R.class \
+C:\Users\Stefan\Desktop\git\i002\i002_z005\plansh\bin\classes\iiuj\plansh\main\WindowsLayer$Window.class \
+C:\Users\Stefan\Desktop\git\i002\i002_z005\plansh\bin\classes\iiuj\plansh\main\WindowsLayer$WindowList$Node.class \
+C:\Users\Stefan\Desktop\git\i002\i002_z005\plansh\bin\classes\iiuj\plansh\main\WindowsLayer$WindowList.class \
+C:\Users\Stefan\Desktop\git\i002\i002_z005\plansh\bin\classes\iiuj\plansh\main\WindowsLayer.class \
 C:\Users\Stefan\Desktop\git\i002\i002_z005\plansh\libs\commons-compress-1.4.1.jar \
 C:\Program Files (x86)\Android\android-sdk\tools\support\annotations.jar \
 C:\Users\Stefan\Desktop\git\i002\i002_z005\plansh\libs\cocos2d-android.jar \
